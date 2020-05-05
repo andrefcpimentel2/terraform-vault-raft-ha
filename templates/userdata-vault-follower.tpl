@@ -180,13 +180,9 @@ listener "tcp" {
   tls_cert_file = "/etc/ssl/vault/vault.crt"
   tls_key_file  = "/etc/ssl/vault/me.key"
 }
-seal "transit" {
-  address            = "http://${tpl_vault_transit_addr}:8200"
-  token              = "root"
-  disable_renewal    = "false"
-  // Key configuration
-  key_name           = "unseal_key"
-  mount_path         = "transit/"
+seal "awskms" {
+  region = "${region}"
+  kms_key_id = "${kmskey}"
 }
 api_addr = "https://$${PUBLIC_IP}:8200"
 cluster_addr = "https://$${PRIVATE_IP}:8201"
@@ -268,5 +264,10 @@ fi
 
 sudo systemctl enable vault
 sudo systemctl start vault
+
+logger "Waiting for Vault to finish preparations (10s)"
+sleep 10
+
+vault write sys/license text="${vault_ent_license}"
 
 logger "Complete"

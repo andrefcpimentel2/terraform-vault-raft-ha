@@ -21,10 +21,6 @@ SHELLCOMMANDS
 output "endpoints" {
   value = <<EOF
 
-  vault_transit (${aws_instance.vault-transit.public_ip}) | internal: (${aws_instance.vault-transit.private_ip})
-    - Initialized and unsealed.
-    - The root token creates a transit key that enables the other Vaults to auto-unseal.
-    - Does not join the High-Availability (HA) cluster.
 
   vault_leader (${aws_instance.vault-server-leader.public_ip}) | internal: (${aws_instance.vault-server-leader.private_ip})
     - Initialized and unsealed.

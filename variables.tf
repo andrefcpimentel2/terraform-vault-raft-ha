@@ -90,13 +90,6 @@ variable "license_file" {
 }
 
 
-
-variable "vault_transit_private_ip" {
-  description = "The private ip of the first Vault node for Auto Unsealing"
-  default = "10.0.1.21"
-}
-
-
 variable "vault_leader_names" {
   description = "Names of the Vault nodes that will join the cluster"
   default = "vault_leader"
@@ -124,7 +117,7 @@ variable "vault_follower_private_ips" {
 
 # URL for Vault OSS binary
 variable "vault_zip_file" {
-  default = "https://releases.hashicorp.com/vault/1.4.0/vault_1.4.0_linux_amd64.zip"
+  default = "https://releases.hashicorp.com/vault/1.4.1+ent/vault_1.4.1+ent_linux_amd64.zip"
 }
 
 # Instance size
@@ -139,5 +132,7 @@ variable "hashibot_reaper_ttl" {
   default = 48
 }
 
-
+variable "vault_ent_license" {
+  default = ""
+}
 
