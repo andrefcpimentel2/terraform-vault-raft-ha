@@ -136,3 +136,8 @@ variable "vault_ent_license" {
   default = ""
 }
 
+variable "vault_admin" {
+  default = "admin"
+}
+
+

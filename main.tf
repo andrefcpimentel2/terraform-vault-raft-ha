@@ -1,6 +1,6 @@
 
 
-resource "random_password" "password" {
+resource "random_password" "vault_admin_password" {
   length = 16
   special = true
   override_special = "_%@"
@@ -46,7 +46,9 @@ resource "aws_instance" "vault-server-leader" {
     key  = tls_private_key.vault.private_key_pem,
     kmskey        = aws_kms_key.vaultkms.id,
     region = var.region,
-    vault_ent_license = var.vault_ent_license
+    vault_ent_license = var.vault_ent_license,
+    vault_admin = var.vault_admin,
+    vault_admin_password = random_password.vault_admin_password.result
   })
 
   tags = {

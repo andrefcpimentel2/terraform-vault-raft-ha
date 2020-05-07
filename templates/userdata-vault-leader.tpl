@@ -290,8 +290,17 @@ sleep 10
 vault write sys/license text="${vault_ent_license}"
 
 logger "Enabling kv-v2 secrets engine and inserting secret"
-vault secrets enable -path=kv kv-v2
-vault kv put kv/apikey webapp=ABB39KKPTWOR832JGNLS02
+
+vault policy write admin - <<EOR
+  path "*" {
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+EOR
+
+vault auth enable userpass
+
+vault write auth/userpass/users/${vault_admin} password=${vault_admin_password} policies=admin
 
 
 logger "Complete"
