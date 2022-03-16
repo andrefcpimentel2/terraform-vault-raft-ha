@@ -44,10 +44,7 @@ output "endpoints" {
   Vault LB for GUI HTTPS:
   https://${aws_route53_record.vault_lb.fqdn}:8200
 
-    Vault admin:
-    ${var.vault_admin}
-    Vault admin password:
-    ${random_password.vault_admin_password.result}
+
 
 EOF
 }

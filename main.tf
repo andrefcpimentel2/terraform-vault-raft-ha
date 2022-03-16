@@ -15,10 +15,6 @@ resource "aws_kms_key" "vaultkms" {
 
   tags = {
     Name           = "${var.namespace}-kms"
-    owner          = var.owner
-    created-by     = var.created-by
-    sleep-at-night = var.sleep-at-night
-    TTL            = var.TTL
   }
 }
 
@@ -55,9 +51,6 @@ resource "aws_instance" "vault-server-leader" {
     Name = "${var.namespace}-vault-leader"
   }
 
-  lifecycle {
-    ignore_changes = [ami, tags]
-  }
 }
 
 //--------------------------------------------------------------------
@@ -90,10 +83,6 @@ resource "aws_instance" "vault-server-follower" {
 
   tags = {
     Name = "${var.namespace}-vault-follower-${var.vault_follower_names[count.index]}"
-  }
-
-  lifecycle {
-    ignore_changes = [ami, tags]
   }
 
   depends_on = [
@@ -137,27 +126,6 @@ data "aws_iam_policy_document" "assume_role" {
 
 data "aws_iam_policy_document" "vault-server" {
   statement {
-    sid    = "1"
-    effect = "Allow"
-
-    actions = ["ec2:DescribeInstances"]
-
-    resources = ["*"]
-  }
-
-  statement {
-    sid    = "VaultAWSAuthMethod"
-    effect = "Allow"
-    actions = [
-      "ec2:DescribeInstances",
-      "iam:GetInstanceProfile",
-      "iam:GetUser",
-      "iam:GetRole",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
     sid    = "VaultKMSUnseal"
     effect = "Allow"
 
@@ -167,6 +135,29 @@ data "aws_iam_policy_document" "vault-server" {
       "kms:DescribeKey",
     ]
 
+    resources = [aws_kms_key.vaultkms.arn]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeInstances",
+      "iam:PassRole",
+      "iam:ListRoles",
+      "cloudwatch:PutMetricData",
+      "ds:DescribeDirectories",
+      "ec2:DescribeInstanceStatus",
+      "logs:*",
+      "ec2messages:*",
+      "ec2:DescribeInstances",
+      "ec2:DescribeTags",
+      "ec2:DescribeVolumes",
+      "ec2:AttachVolume",
+      "ec2:DetachVolume",
+    ]
+
     resources = ["*"]
   }
+
 }
